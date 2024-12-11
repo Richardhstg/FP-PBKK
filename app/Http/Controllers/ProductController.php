@@ -59,7 +59,7 @@ class ProductController extends Controller
 
         $script_path = str_replace('\\', '/', app_path('tes.py'));
 
-        $command = escapeshellcmd("python " . escapeshellarg($script_path) . " " . escapeshellarg($image_path));
+        $command = escapeshellcmd("python3 " . escapeshellarg($script_path) . " " . escapeshellarg($image_path));
 
         $output = shell_exec($command);
 
