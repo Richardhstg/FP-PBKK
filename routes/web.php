@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ChatbotController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -30,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/cart/delete/{id}', [CartController::class, 'destroy'])->name('cart.delete');
 });
 
+Route::post('/chat', [ChatbotController::class, 'handleChat']);
 Route::get('/shop', action: [ProductController::class, 'index'])->name('shop');
 Route::get('/product/{id}', action: [ProductController::class, 'single'])->name('single');
 Route::get('/detect-image', [ProductController::class, 'detectImage'])->name('detect');
