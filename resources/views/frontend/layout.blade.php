@@ -292,23 +292,20 @@
         </nav>
     </header>
 
-     <!-- Offcanvas untuk ChatBot -->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="chatBotCanvas" aria-labelledby="chatBotCanvasLabel">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="chatBotCanvas" aria-labelledby="chatBotCanvasLabel">
   <div class="offcanvas-header">
     <h5 class="offcanvas-title" id="chatBotCanvasLabel">ChatBot</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
-  <div class="offcanvas-body">
-    <div id="chat-container">
-      <!-- Kotak Chat -->
-      <div id="chatbox">
-        <div id="messages"></div>
-      </div>
-      <!-- Input Chat -->
-      <div class="input-group mt-3">
-        <input type="text" id="chat-input" class="form-control" placeholder="Type your message...">
-        <button class="btn btn-primary" id="send-btn">Send</button>
-      </div>
+  <div class="offcanvas-body p-0 d-flex flex-column">
+    <!-- Bagian untuk menampilkan pesan -->
+    <div id="chatbox" class="flex-grow-1 overflow-auto p-3">
+      <div id="messages"></div>
+    </div>
+    <!-- Bagian input selalu di bawah -->
+    <div class="input-group p-2 border-top">
+      <input type="text" id="chat-input" class="form-control rounded-pill bg-dark text-white border-0" placeholder="Type your message...">
+      <button class="btn btn-primary rounded-pill ms-2" id="send-btn">Send</button>
     </div>
   </div>
 </div>
@@ -548,7 +545,8 @@
                 messagesContainer.appendChild(botMessage);
 
                 // Scroll ke bawah untuk pesan baru
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                const chatbox = document.getElementById('chatbox'); // Pastikan chatbox digunakan
+                chatbox.scrollTop = chatbox.scrollHeight;
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -556,13 +554,16 @@
                 botMessage.textContent = "Bot: Maaf, ada kesalahan dalam memproses permintaan Anda.";
                 botMessage.className = 'bot-message';
                 messagesContainer.appendChild(botMessage);
+
+                // Scroll ke bawah untuk pesan error
+                const chatbox = document.getElementById('chatbox'); // Pastikan chatbox digunakan
+                chatbox.scrollTop = chatbox.scrollHeight;
             });
 
         // Bersihkan input field
         inputField.value = '';
     }
 });
-
 </script>
 
     <script src="{{ asset('js/jquery-1.11.0.min.js') }}"></script>

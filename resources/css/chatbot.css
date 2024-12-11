@@ -1,15 +1,51 @@
+/* Bagian chatbox untuk scroll */
 #chatbox {
-  height: 300px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-.user-message {
-  color: blue;
-  margin-bottom: 10px;
-}
-.bot-message {
-  color: green;
-  margin-bottom: 10px;
-}
+    max-height: calc(100vh - 150px); /* Sesuaikan dengan tinggi layar */
+    overflow-y: auto;
+    background-color: #1e1e1e; /* Background warna gelap */
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* Scrollbar styling */
+  #chatbox::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  #chatbox::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 10px;
+  }
+  
+  #chatbox::-webkit-scrollbar-track {
+    background-color: #1e1e1e;
+  }
+  
+  /* Style bubble chat */
+  .user-message, .bot-message {
+    padding: 8px 12px;
+    border-radius: 15px;
+    max-width: 80%;
+    display: inline-block;
+    font-size: 14px;
+  }
+  
+  .user-message {
+    align-self: flex-end;
+    background-color: #005b96; /* Warna biru untuk user */
+    color: #ffffff;
+  }
+  
+  .bot-message {
+    align-self: flex-start;
+    background-color: #333333; /* Warna abu-abu untuk bot */
+    color: #c7c7c7;
+  }
+  
+  /* Input box tetap di bawah */
+  .input-group {
+    background-color: #121212; /* Warna dark theme */
+  }
+  
