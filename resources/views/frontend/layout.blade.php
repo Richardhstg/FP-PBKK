@@ -518,91 +518,126 @@
 
 <script>
     document.getElementById('send-btn').addEventListener('click', () => {
-        const inputField = document.getElementById('chat-input');
-        const message = inputField.value;
-        const messagesContainer = document.getElementById('messages');
+    const inputField = document.getElementById('chat-input');
+    const message = inputField.value.trim(); // Hilangkan spasi ekstra
+    const messagesContainer = document.getElementById('messages');
 
-        if (message.trim() !== '') {
-            // Tampilkan pesan user sebagai bubble di kanan
-            const userMessage = document.createElement('div');
-            userMessage.textContent = message;
-            userMessage.className = 'user-message bubble-right';
-            messagesContainer.appendChild(userMessage);
+    if (message !== '') {
+        const userMessage = document.createElement('div');
+        userMessage.textContent = message;
+        userMessage.className = 'user-message bubble-right';
+        messagesContainer.appendChild(userMessage);
 
-            // Kirim pesan ke server untuk mendapatkan respons
-            fetch('/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                },
-                body: JSON.stringify({ message: message }),
+        const chatbox = document.getElementById('chatbox');
+        chatbox.scrollTop = chatbox.scrollHeight;
+
+        const typingMessage = document.createElement('div');
+        typingMessage.textContent = 'Typing...';
+        typingMessage.className = 'bot-message bubble-left';
+        typingMessage.id = 'typing-placeholder'; // Beri ID untuk dihapus nanti
+        messagesContainer.appendChild(typingMessage);
+
+        fetch('/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            },
+            body: JSON.stringify({ message: message }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                const placeholder = document.getElementById('typing-placeholder');
+                if (placeholder) placeholder.remove();
+
+                const md = window.markdownit();
+
+                const botMessage = document.createElement('div');
+                botMessage.innerHTML = md.render(data.reply); 
+                botMessage.className = 'bot-message bubble-left';
+                messagesContainer.appendChild(botMessage);
+
+                chatbox.scrollTop = chatbox.scrollHeight;
             })
-                .then(response => response.json())
-                .then(data => {
-                    // Inisialisasi markdown-it
-                    const md = window.markdownit();
+            .catch(error => {
+                console.error('Error:', error);
 
-                    // Tampilkan pesan bot sebagai bubble di kiri dengan Markdown
-                    const botMessage = document.createElement('div');
-                    botMessage.innerHTML = md.render(data.reply); // Render Markdown
-                    botMessage.className = 'bot-message bubble-left';
-                    messagesContainer.appendChild(botMessage);
+                const placeholder = document.getElementById('typing-placeholder');
+                if (placeholder) placeholder.remove();
 
-                    // Scroll ke bawah untuk pesan baru
-                    const chatbox = document.getElementById('chatbox');
-                    chatbox.scrollTop = chatbox.scrollHeight;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    const botMessage = document.createElement('div');
-                    botMessage.textContent = "Bot: Maaf, ada kesalahan dalam memproses permintaan Anda.";
-                    botMessage.className = 'bot-message bubble-left';
-                    messagesContainer.appendChild(botMessage);
+                const botMessage = document.createElement('div');
+                botMessage.textContent = "Bot: Maaf, ada kesalahan dalam memproses permintaan Anda.";
+                botMessage.className = 'bot-message bubble-left';
+                messagesContainer.appendChild(botMessage);
 
-                    // Scroll ke bawah untuk pesan error
-                    const chatbox = document.getElementById('chatbox');
-                    chatbox.scrollTop = chatbox.scrollHeight;
-                });
+                chatbox.scrollTop = chatbox.scrollHeight;
+            });
 
-            // Bersihkan input field
-            inputField.value = '';
-        }
-    });
+        inputField.value = '';
+    }
+});
+
+document.getElementById('chat-input').addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault(); 
+        document.getElementById('send-btn').click(); 
+    }
+});
 </script>
 
 <style>
+
 #messages {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px; 
 }
 
 .bubble-left {
     align-self: flex-start;
-    background-color: #e0e0e0;
-    color: #000;
-    padding: 10px;
-    border-radius: 10px 10px 10px 0;
-    max-width: 70%;
+    background-color: #211ed6; 
+    color: white; 
+    padding: 15px; 
+    border-radius: 12px 12px 12px 0; 
+    max-width: 70%; 
+    font-size: 16px; 
+    line-height: 1.5; 
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); 
 }
 
 .bubble-right {
     align-self: flex-end;
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px;
-    border-radius: 10px 10px 0 10px;
-    max-width: 70%;
+    background-color: #4a4d52; 
+    color: white; 
+    padding: 15px; 
+    border-radius: 12px 12px 0 12px; 
+    max-width: 70%; 
+    font-size: 16px; 
+    line-height: 1.5; 
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); 
 }
 
 #chatbox {
-    height: 300px;
+    height: 400px; 
     overflow-y: auto;
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin-bottom: 10px;
+    border: 2px solid #545250; 
+    padding: 15px; 
+    background-color: #222831; 
+    border-radius: 8px; 
+    margin-bottom: 20px; 
+    scrollbar-width: thin; 
+    scrollbar-color: #bcbdc0 transparent; 
 }
+
+#chatbox::-webkit-scrollbar {
+    width: 8px; /* Gulir ramping */
+}
+
+#chatbox::-webkit-scrollbar-thumb {
+    background: #bcbdc0; 
+    border-radius: 4px; 
+}
+
 </style>
 
     <script src="{{ asset('js/jquery-1.11.0.min.js') }}"></script>
