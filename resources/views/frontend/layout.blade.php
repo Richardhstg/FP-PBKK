@@ -294,7 +294,7 @@
 
     <div class="offcanvas offcanvas-end" tabindex="-1" id="chatBotCanvas" aria-labelledby="chatBotCanvasLabel">
   <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="chatBotCanvasLabel">ChatBot</h5>
+    <h5 class="offcanvas-title" id="chatBotCanvasLabel">Trony</h5>
     <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body p-0 d-flex flex-column">
