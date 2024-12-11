@@ -515,60 +515,95 @@
     </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/markdown-it@10.0.0/dist/markdown-it.min.js"></script>
+
 <script>
     document.getElementById('send-btn').addEventListener('click', () => {
-    const inputField = document.getElementById('chat-input');
-    const message = inputField.value;
-    const messagesContainer = document.getElementById('messages');
+        const inputField = document.getElementById('chat-input');
+        const message = inputField.value;
+        const messagesContainer = document.getElementById('messages');
 
-    if (message.trim() !== '') {
-        // Tampilkan pesan user
-        const userMessage = document.createElement('div');
-        userMessage.textContent = "You: " + message;
-        userMessage.className = 'user-message';
-        messagesContainer.appendChild(userMessage);
+        if (message.trim() !== '') {
+            // Tampilkan pesan user sebagai bubble di kanan
+            const userMessage = document.createElement('div');
+            userMessage.textContent = message;
+            userMessage.className = 'user-message bubble-right';
+            messagesContainer.appendChild(userMessage);
 
-        // Kirim pesan ke server untuk mendapatkan respons
-        fetch('/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            },
-            body: JSON.stringify({ message: message }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                // Inisialisasi markdown-it
-                const md = window.markdownit();
-
-                // Tampilkan pesan bot dengan Markdown
-                const botMessage = document.createElement('div');
-                botMessage.innerHTML = md.render(data.reply); // Render Markdown
-                botMessage.className = 'bot-message';
-                messagesContainer.appendChild(botMessage);
-
-                // Scroll ke bawah untuk pesan baru
-                const chatbox = document.getElementById('chatbox'); // Pastikan chatbox digunakan
-                chatbox.scrollTop = chatbox.scrollHeight;
+            // Kirim pesan ke server untuk mendapatkan respons
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                },
+                body: JSON.stringify({ message: message }),
             })
-            .catch(error => {
-                console.error('Error:', error);
-                const botMessage = document.createElement('div');
-                botMessage.textContent = "Bot: Maaf, ada kesalahan dalam memproses permintaan Anda.";
-                botMessage.className = 'bot-message';
-                messagesContainer.appendChild(botMessage);
+                .then(response => response.json())
+                .then(data => {
+                    // Inisialisasi markdown-it
+                    const md = window.markdownit();
 
-                // Scroll ke bawah untuk pesan error
-                const chatbox = document.getElementById('chatbox'); // Pastikan chatbox digunakan
-                chatbox.scrollTop = chatbox.scrollHeight;
-            });
+                    // Tampilkan pesan bot sebagai bubble di kiri dengan Markdown
+                    const botMessage = document.createElement('div');
+                    botMessage.innerHTML = md.render(data.reply); // Render Markdown
+                    botMessage.className = 'bot-message bubble-left';
+                    messagesContainer.appendChild(botMessage);
 
-        // Bersihkan input field
-        inputField.value = '';
-    }
-});
+                    // Scroll ke bawah untuk pesan baru
+                    const chatbox = document.getElementById('chatbox');
+                    chatbox.scrollTop = chatbox.scrollHeight;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const botMessage = document.createElement('div');
+                    botMessage.textContent = "Bot: Maaf, ada kesalahan dalam memproses permintaan Anda.";
+                    botMessage.className = 'bot-message bubble-left';
+                    messagesContainer.appendChild(botMessage);
+
+                    // Scroll ke bawah untuk pesan error
+                    const chatbox = document.getElementById('chatbox');
+                    chatbox.scrollTop = chatbox.scrollHeight;
+                });
+
+            // Bersihkan input field
+            inputField.value = '';
+        }
+    });
 </script>
+
+<style>
+#messages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bubble-left {
+    align-self: flex-start;
+    background-color: #e0e0e0;
+    color: #000;
+    padding: 10px;
+    border-radius: 10px 10px 10px 0;
+    max-width: 70%;
+}
+
+.bubble-right {
+    align-self: flex-end;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px;
+    border-radius: 10px 10px 0 10px;
+    max-width: 70%;
+}
+
+#chatbox {
+    height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+</style>
 
     <script src="{{ asset('js/jquery-1.11.0.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
