@@ -514,6 +514,7 @@
         <hr>
     </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/markdown-it@10.0.0/dist/markdown-it.min.js"></script>
 <script>
     document.getElementById('send-btn').addEventListener('click', () => {
     const inputField = document.getElementById('chat-input');
@@ -538,9 +539,12 @@
         })
             .then(response => response.json())
             .then(data => {
-                // Tampilkan pesan bot
+                // Inisialisasi markdown-it
+                const md = window.markdownit();
+
+                // Tampilkan pesan bot dengan Markdown
                 const botMessage = document.createElement('div');
-                botMessage.textContent = "Bot: " + data.reply;
+                botMessage.innerHTML = md.render(data.reply); // Render Markdown
                 botMessage.className = 'bot-message';
                 messagesContainer.appendChild(botMessage);
 
